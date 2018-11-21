@@ -6,5 +6,38 @@
   "repository": "https://gitlab.com/amitrajput1992/offscreen-canvas-gilfer.git",
   "author": "amitrajput1992 <amitrajput123.ar@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "watch": "parcel src/app/index.js src/app/index.html",
+    "build": "parcel build src/app/index.js src/app/index.html",
+    "prettier": "prettier --write --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}",
+    "prettier-dr": "prettier --debug-check --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-decorators": "^7.1.6",
+    "@babel/plugin-proposal-export-namespace-from": "^7.0.0",
+    "@babel/plugin-proposal-function-sent": "^7.1.0",
+    "@babel/plugin-proposal-numeric-separator": "^7.0.0",
+    "@babel/plugin-proposal-throw-expressions": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.0.0",
+    "@babel/plugin-syntax-import-meta": "^7.0.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.1.6",
+    "@babel/plugin-transform-runtime": "^7.1.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "bluebird": "^3.5.3",
+    "flow-bin": "^0.86.0",
+    "nunjucks": "^3.1.4",
+    "omggif": "^1.0.9",
+    "parcel-bundler": "^1.10.3",
+    "parcel-plugin-bundle-visualiser": "^1.2.0",
+    "parcel-plugin-flow": "^0.1.0",
+    "parcel-plugin-nunjucks": "^1.0.0",
+    "prettier": "^1.15.2",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3"
+  }
 }

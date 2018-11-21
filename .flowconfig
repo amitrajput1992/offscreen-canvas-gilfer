@@ -1,5 +1,5 @@
 [ignore]
-.*/node_modules/*
+.*/node_modules/.*/test
 [include]
 .*/src
 [libs]
@@ -7,5 +7,5 @@
 [lints]
 
 [options]
-
+munge_underscores=true
 [strict]

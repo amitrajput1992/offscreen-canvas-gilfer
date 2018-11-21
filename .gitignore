@@ -56,11 +56,13 @@ typings/
 
 # dotenv environment variables file
 .env
+.cache
 
 # Build folders
 data/
 build/
 cloud/
+dist/
 
 # IDE Specific
 .vscode/
