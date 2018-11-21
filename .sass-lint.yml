@@ -1,0 +1,116 @@
+# Linter Options
+options:
+  # Don't merge default rules
+    merge-default-rules: false
+  # Set the formatter to 'html'
+  # formatter: html
+  # Output file instead of logging results
+  # output-file: 'linters/sass-lint.html'
+
+# File Options
+files:
+  include: 'css/**/*.s+(a|c)ss'
+  ignore:
+    - 'node_modules/**/*.*'
+    - 'bower_components/**/*.*'
+
+# Rule Configuration
+rules:
+
+  # Style Guide
+  border-zero:
+    - 1
+    - convention: zero
+  class-name-format:
+    - 1
+    - convention: hyphenatedlowercase
+  hex-notation:
+    - 2
+    - style: uppercase
+  indentation:
+    - 2
+    - size: 2
+  quotes:
+    - 1
+    - style: doublequotes
+  variable-for-property:
+    - 2
+    - properties:
+      - content
+
+  # Extends
+  extends-before-declarations: 2
+  extends-before-mixins: 2
+  placeholder-in-extend: 2
+
+  # Mixins
+  mixins-before-declarations:
+    - 2
+    - exclude:
+      - breakpoint
+      - mq
+
+  # Disallows
+  no-debug: 2
+  no-duplicate-properties: 2
+  no-empty-rulesets: 0
+  no-ids: 2
+  no-important: 0
+  no-vendor-prefixes: 0
+  no-warn: 2
+
+  # Property Units
+  property-units:
+    - 1
+    - global:
+      # Font-relative lengths
+      - ch
+      - em
+      - ex
+      - rem
+      - cm
+
+      # Absolute lengths
+      - in
+      - mm
+      - pc
+      - pt
+      - px
+      - q
+
+      # Viewport-percentage lengths
+      - vh
+      - vw
+      - vmin
+      - vmax
+
+      # Angle
+      - deg
+      - grad
+      - rad
+      - turn
+
+      # Duration
+      - ms
+      - s
+
+      # Frequency
+      - Hz
+      - kHz
+
+      # Resolution
+      - dpi
+      - dpcm
+      - dppx
+
+      # Other
+      - '%'
+      per-property: {}
+
+  # Inner Spacing
+  space-after-colon: 1
+  space-after-comma: 1
+  space-before-brace: 1
+
+  # Final items
+  final-newline: 2
