@@ -3,15 +3,21 @@
  * @format
  */
 import {type GifReader}  from 'omggif';
-import Promise  from 'bluebird';
 
 export default class Decoder {
-  decodeFramesSync = (reader: GifReader) => {
-    return [...reader.numFrames()].map(fr => this._decodeFrame(reader, fr));
+  decodeFramesSync = (reader: GifReader): any => {
+    return Array.from({length: reader.numFrames()}, (v, k) => k).map(fr => this._decodeFrame(reader, fr));
   };
 
   decodeFramesAsync = (reader: GifReader) => {
-    return Promise.map([...reader.numFrames()], fr => this._decodeFrame(reader, fr), 1);
+    const pArray = [];
+    for(let fr = 0; fr< reader.numFrames(); fr++) {
+      pArray.push(new Promise(resolve => {
+        resolve(this._decodeFrame(reader, fr));
+      }));
+    }
+
+    return Promise.all(pArray);
   };
 
   _decodeFrame = (reader: GifReader, frameIndex: number) => {

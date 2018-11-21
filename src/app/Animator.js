@@ -40,9 +40,7 @@ export default class Animator {
     this._isRunning = false;
   }
 
-  //todo set canvas and ctx correctly
-  setCanvasEl = (selector) => {
-    const canvas = null;
+  setCanvasEl = (canvas: any) => {
     this._canvas = canvas;
     this._ctx = this._canvas.getContext('2d');
   };
@@ -164,7 +162,7 @@ export default class Animator {
    * @param i
    */
   onFrame = (frame: any, i: number) => {
-    if(frame.buffer === null) {
+    if(!frame.buffer) {
       frame.buffer = this._createBufferCanvas(frame, this._width, this._height);
     }
     if(typeof this.disposeFrame === 'function') {

@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "watch": "parcel src/app/index.js src/app/index.html",
+    "watch": "parcel -p 9092 src/app/index.js src/app/index.html",
     "build": "parcel build src/app/index.js src/app/index.html",
     "prettier": "prettier --write --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}",
     "prettier-dr": "prettier --debug-check --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}"

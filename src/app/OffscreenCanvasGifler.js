@@ -19,9 +19,12 @@ class OffscreenCanvasGifler {
   _cb: any;
   _animator: Animator;
 
-  constructor(url: string, cb: any = () => {}) {
+  constructor(cb: any = () => {}) {
     this._decoder = new Decoder();
     this._cb = cb;
+  }
+
+  init(url: string) {
     return this._getGif(url);
   }
 
@@ -37,13 +40,11 @@ class OffscreenCanvasGifler {
     xhr.send();
 
     const dataBuffer = await dataPromise;
-    console.log(dataBuffer);
     return await this._init(dataBuffer);
   }
 
   async _init(data: any) {
     const reader = new GifReader(new Uint8Array(data));
-    console.log(reader);
     const frames = await this._decoder.decodeFramesAsync(reader);
     this._animator = new Animator(reader, frames);
   }
@@ -63,8 +64,8 @@ class OffscreenCanvasGifler {
     this._animator.setCanvasEl(canvas);
   };
 
-  animate = () => {
-    this._animator.animateInCanvas();
+  animate = (setDimensions: boolean) => {
+    this._animator.animateInCanvas(setDimensions);
   };
 }
 
