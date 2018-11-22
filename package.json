@@ -6,7 +6,7 @@
   "repository": "https://gitlab.com/amitrajput1992/offscreen-canvas-gilfer.git",
   "author": "amitrajput1992 <amitrajput123.ar@gmail.com>",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "scripts": {
     "watch": "parcel -p 9092 watch src/app/OffscreenCanvasGifler.js",
     "build": "yarn run-s build-worker build-app",
