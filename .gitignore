@@ -60,9 +60,9 @@ typings/
 
 # Build folders
 data/
-build/
 cloud/
 dist/
+build/report.html
 
 # IDE Specific
 .vscode/
