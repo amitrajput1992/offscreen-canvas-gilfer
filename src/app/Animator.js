@@ -28,8 +28,11 @@ export default class Animator {
   _delayCompensation: number;
   _canvas: any;
   _ctx: any;
+  _worker: Worker;
+  _cb: any;
 
-  constructor(reader: GifReader, frames: Array) {
+  constructor(reader: GifReader, frames: Array, cb: any) {
+    this._worker = new Worker('./worker.js');
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -38,31 +41,43 @@ export default class Animator {
     this._loops = 0;
     this._frameIndex = 0;
     this._isRunning = false;
+    this._cb = cb;
+    this._worker.onmessage = this._onMessage;
+
+    this._worker.postMessage({
+      type: 'init',
+      detail: {
+        frames: this._frames,
+        width: this._width,
+        height: this._height,
+        loopCount: this._loopCount,
+      }
+    });
   }
 
-  setCanvasEl = (canvas: any) => {
+  _onMessage = (e) => {
+    if(e.data && e.data.type === 'onDrawFrame') {
+      const dataURL = this._canvas.toDataURL();
+      // send this data URL to any callbacks registered
+      if(this._cb && typeof this._cb === 'function') {
+        this._cb(dataURL);
+      }
+    }
+  };
+
+  setCanvasEl = (canvas: any, setDimensions: boolean = true) => {
     this._canvas = canvas;
-    this._ctx = this._canvas.getContext('2d');
-  };
-
-  _createBufferCanvas = (frame: any, width: number, height: number) => {
-    let bufferCanvas, bufferContext, imageData;
-    bufferCanvas = document.createElement('canvas');
-    bufferContext = bufferCanvas.getContext('2d');
-    bufferCanvas.width = frame.width;
-    bufferCanvas.height = frame.height;
-    imageData = bufferContext.createImageData(width, height);
-    imageData.data.set(frame.pixels);
-    bufferContext.putImageData(imageData, -frame.x, -frame.y);
-    return bufferCanvas;
-  };
-
-  _start = () => {
-    this._lastTime = new Date().valueOf();
-    this._delayCompensation = 0;
-    this._isRunning = true;
-    setTimeout(this._nextFrame, 0);
-    return this;
+    if(setDimensions) {
+      this._canvas.width = this._width;
+      this._canvas.height = this._height;
+    }
+    let offscreenCanvas = this._canvas.transferControlToOffscreen();
+    this._worker.postMessage({
+      type: 'canvasCtx',
+      detail: {
+        canvas: offscreenCanvas,
+      }
+    }, [offscreenCanvas]);
   };
 
   _stop = () => {
@@ -78,52 +93,6 @@ export default class Animator {
 
   running = () => {
     return this._isRunning;
-  };
-
-  _nextFrame = () => {
-    requestAnimationFrame(this._nextFrameRender);
-  };
-
-  _nextFrameRender = () => {
-    if (!this._isRunning) {
-      return;
-    }
-    let frame = this._frames[this._frameIndex];
-    this.onFrame(frame, this._frameIndex);
-    return this._enqueueNextFrame();
-  };
-
-  _advanceFrame = () => {
-    this._frameIndex += 1;
-    if (this._frameIndex >= this._frames.length) {
-      if (this._loopCount !== 0 && this._loopCount === this._loops) {
-        this._stop();
-      } else {
-        this._frameIndex = 0;
-        this._loops += 1;
-      }
-    }
-  };
-
-  _enqueueNextFrame = () => {
-    let actualDelay, delta, frame, frameDelay;
-    this._advanceFrame();
-    while (this._isRunning) {
-      frame = this._frames[this._frameIndex];
-      delta = new Date().valueOf() - this._lastTime;
-      this._lastTime += delta;
-      this._delayCompensation += delta;
-      frameDelay = frame.delay * 10;
-      actualDelay = frameDelay - this._delayCompensation;
-      this._delayCompensation -= frameDelay;
-      if (actualDelay < 0) {
-        this._advanceFrame();
-        continue;
-      } else {
-        setTimeout(this._nextFrame, actualDelay);
-        break;
-      }
-    }
   };
 
   /*---
@@ -147,49 +116,11 @@ export default class Animator {
     animateInCanvas -> start -> onFrame -> onDrawFrame
 
    */
-  animateInCanvas = (setDimensions: boolean = true) => {
-    if(setDimensions) {
-      this._canvas.width = this._width;
-      this._canvas.height = this._height;
-    }
-    this._start();
+  animateInCanvas = () => {
+    this._worker.postMessage({
+      type: 'start',
+      detail: {}
+    });
     return this;
-  };
-
-  /**
-   * Called on each frame
-   * @param frame
-   * @param i
-   */
-  onFrame = (frame: any, i: number) => {
-    if(!frame.buffer) {
-      frame.buffer = this._createBufferCanvas(frame, this._width, this._height);
-    }
-    if(typeof this.disposeFrame === 'function') {
-      this.disposeFrame();
-    }
-    this.disposeFrame = this.getNextDisposeFrame(frame);
-    this.onDrawFrame(frame, i);
-  };
-
-  /**
-   * draw the frame on the canvas
-   * @param frame
-   * @param i: frame index
-   */
-  onDrawFrame = (frame: any, i: number) => {
-    return this._ctx.drawImage(frame.buffer, frame.x, frame.y);
-  };
-
-  getNextDisposeFrame = (frame: any) => {
-    switch(frame.disposal) {
-      case 2: {
-        return () => this._ctx.clearRect(0, 0, this._canvas.width, this._canvas.height);
-      }
-      case 3: {
-        let saved = this._ctx.getImageData(0, 0, this._canvas.width, this._canvas.height);
-        return () => this._ctx.putImageData(saved, 0, 0);
-      }
-    }
   };
 }

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hello Gifler</title>
+</head>
+<body>
+    <script type="text/javascript" src="../build/offscreencanvasgifler.min.js"></script>
+    <div id="root">
+        <canvas id="myCanvas" width="200" height="100"></canvas>
+    </div>
+    <script>
+        const gifler = new window.OffscreenCanvasGifler();
+        gifler.init('https://cdn-force.vrgmetri.com/organization/g/test/tenor.gif').then(() => {
+// gifler.init('https://media.giphy.com/media/3osxY7MLrs5wP2wRgc/giphy.gif').then(() => {
+            gifler.setCanvasEl('#myCanvas');
+            gifler.animate();
+        });
+    </script>
+</body>
+</html>

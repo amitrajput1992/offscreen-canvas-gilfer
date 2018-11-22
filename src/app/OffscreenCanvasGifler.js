@@ -3,6 +3,7 @@
  * @format
  * Entry point for the API
  */
+import '@babel/polyfill';
 import {GifReader}  from 'omggif';
 import Decoder  from './Decoder';
 import Promise  from 'bluebird';
@@ -46,7 +47,7 @@ class OffscreenCanvasGifler {
   async _init(data: any) {
     const reader = new GifReader(new Uint8Array(data));
     const frames = await this._decoder.decodeFramesAsync(reader);
-    this._animator = new Animator(reader, frames);
+    this._animator = new Animator(reader, frames, this._cb);
   }
 
   _getCanvasElement = (selector: any) => {
@@ -70,3 +71,4 @@ class OffscreenCanvasGifler {
 }
 
 export default OffscreenCanvasGifler;
+window.OffscreenCanvasGifler = OffscreenCanvasGifler;
