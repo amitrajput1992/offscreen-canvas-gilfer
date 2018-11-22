@@ -5,7 +5,7 @@
 
 // define vars required
 // internal
-let lastTime;
+export const bridgeCode = `let lastTime;
 let delayCompensation;
 let isRunning;
 
@@ -185,3 +185,4 @@ function reset() {
   frameIndex = 0;
   loops = 0;
 }
+`;

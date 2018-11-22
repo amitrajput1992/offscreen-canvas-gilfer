@@ -44,7 +44,7 @@ class OffscreenCanvasGifler {
     this._animator = new Animator(reader, frames, this._cb);
   }
 
-  getCanvasElement = selector => {
+  _getCanvasElement(selector) {
     if (typeof selector === 'string') {
       return document.querySelector(selector);
     } else if (selector.tagName === 'CANVAS') {
@@ -54,12 +54,12 @@ class OffscreenCanvasGifler {
     }
   };
 
-  setCanvasEl = selector => {
-    const canvas = this.getCanvasElement(selector);
+  setCanvasEl(selector) {
+    const canvas = this._getCanvasElement(selector);
     this._animator.setCanvasEl(canvas);
   };
 
-  animate = setDimensions => {
+  animate(setDimensions) {
     this._animator.animateInCanvas(setDimensions);
   };
 }

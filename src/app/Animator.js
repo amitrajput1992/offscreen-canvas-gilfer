@@ -1,6 +1,7 @@
 /**
  * @format
  */
+import {bridgeCode} from './worker';
 /*---
   head : 'animator::createBufferCanvas()'
   text :
@@ -19,7 +20,9 @@
    */
 export default class Animator {
   constructor(reader, frames, cb) {
-    this._worker = new Worker(location.protocol + '//' + location.host + '/build/worker.js');
+    const bridge = new Blob([bridgeCode]);
+    const bridgeCodeURL = URL.createObjectURL(bridge);
+    this._worker = new Worker(bridgeCodeURL);
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -29,7 +32,7 @@ export default class Animator {
     this._frameIndex = 0;
     this._isRunning = false;
     this._cb = cb;
-    this._worker.onmessage = this._onMessage;
+    this._worker.onmessage = this._onMessage.bind(this);
 
     this._worker.postMessage({
       type: 'init',
@@ -42,7 +45,7 @@ export default class Animator {
     });
   }
 
-  _onMessage = e => {
+  _onMessage(e) {
     if (e.data && e.data.type === 'onDrawFrame') {
       const dataURL = this._canvas.toDataURL();
       // send this data URL to any callbacks registered
@@ -52,7 +55,7 @@ export default class Animator {
     }
   };
 
-  setCanvasEl = (canvas, setDimensions = true) => {
+  setCanvasEl(canvas, setDimensions = true) {
     this._canvas = canvas;
     if (setDimensions) {
       this._canvas.width = this._width;
@@ -70,18 +73,18 @@ export default class Animator {
     );
   };
 
-  _stop = () => {
+  _stop() {
     this._isRunning = false;
     return this;
   };
 
-  reset = () => {
+  reset() {
     this._frameIndex = 0;
     this._loops = 0;
     return this;
   };
 
-  running = () => {
+  running() {
     return this._isRunning;
   };
 
@@ -106,7 +109,7 @@ export default class Animator {
     animateInCanvas -> start -> onFrame -> onDrawFrame
 
    */
-  animateInCanvas = () => {
+  animateInCanvas() {
     this._worker.postMessage({
       type: 'start',
       detail: {},
