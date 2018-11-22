@@ -4,10 +4,10 @@
  * Entry point for the API
  */
 import '@babel/polyfill';
-import {GifReader}  from 'omggif';
-import Decoder  from './Decoder';
-import Promise  from 'bluebird';
-import Animator  from './Animator';
+import { GifReader } from 'omggif';
+import Decoder from './Decoder';
+import Promise from 'bluebird';
+import Animator from './Animator';
 
 /**
  * Usage:
@@ -29,14 +29,14 @@ class OffscreenCanvasGifler {
     return this._getGif(url);
   }
 
-  async _getGif (url: string) {
+  async _getGif(url: string) {
     const xhr = new XMLHttpRequest();
     xhr.open('GET', url, true);
     xhr.responseType = 'arraybuffer';
     const dataPromise = new Promise(resolve => {
-      return xhr.onload = function(e) {
+      return (xhr.onload = function(e) {
         return resolve(this.response);
-      }
+      });
     });
     xhr.send();
 
@@ -51,16 +51,16 @@ class OffscreenCanvasGifler {
   }
 
   _getCanvasElement = (selector: any) => {
-    if(typeof selector === 'string') {
+    if (typeof selector === 'string') {
       return document.querySelector(selector);
-    } else if(selector.tagName === 'CANVAS') {
+    } else if (selector.tagName === 'CANVAS') {
       return selector;
     } else {
       throw new Error('Unexpected selector type. Valid types are query-selector-string/canvas-element');
     }
   };
 
-  setCanvasEl = (selector: any)=> {
+  setCanvasEl = (selector: any) => {
     const canvas = this._getCanvasElement(selector);
     this._animator.setCanvasEl(canvas);
   };
