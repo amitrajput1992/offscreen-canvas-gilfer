@@ -1,4 +1,6 @@
-import {type GifReader}  from 'omggif';
+/**
+ * @format
+ */
 /*---
   head : 'animator::createBufferCanvas()'
   text :
@@ -16,23 +18,8 @@ import {type GifReader}  from 'omggif';
   return : A <canvas> element containing the frame's image.
    */
 export default class Animator {
-  _reader: GifReader;
-  _frames: Array;
-  _width: number;
-  _height: number;
-  _loopCount: number;
-  _loops: number;
-  _frameIndex: number;
-  _isRunning: boolean;
-  _lastTime: Date;
-  _delayCompensation: number;
-  _canvas: any;
-  _ctx: any;
-  _worker: Worker;
-  _cb: any;
-
-  constructor(reader: GifReader, frames: Array, cb: any) {
-    this._worker = new Worker(location.protocol + '//' + location.host + '/build/worker.js');
+  constructor(reader, frames, cb) {
+    this._worker = new Worker('./worker.js');
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -51,33 +38,36 @@ export default class Animator {
         width: this._width,
         height: this._height,
         loopCount: this._loopCount,
-      }
+      },
     });
   }
 
-  _onMessage = (e) => {
-    if(e.data && e.data.type === 'onDrawFrame') {
+  _onMessage = e => {
+    if (e.data && e.data.type === 'onDrawFrame') {
       const dataURL = this._canvas.toDataURL();
       // send this data URL to any callbacks registered
-      if(this._cb && typeof this._cb === 'function') {
+      if (this._cb && typeof this._cb === 'function') {
         this._cb(dataURL);
       }
     }
   };
 
-  setCanvasEl = (canvas: any, setDimensions: boolean = true) => {
+  setCanvasEl = (canvas, setDimensions = true) => {
     this._canvas = canvas;
-    if(setDimensions) {
+    if (setDimensions) {
       this._canvas.width = this._width;
       this._canvas.height = this._height;
     }
     let offscreenCanvas = this._canvas.transferControlToOffscreen();
-    this._worker.postMessage({
-      type: 'canvasCtx',
-      detail: {
-        canvas: offscreenCanvas,
-      }
-    }, [offscreenCanvas]);
+    this._worker.postMessage(
+      {
+        type: 'canvasCtx',
+        detail: {
+          canvas: offscreenCanvas,
+        },
+      },
+      [offscreenCanvas],
+    );
   };
 
   _stop = () => {
@@ -119,7 +109,7 @@ export default class Animator {
   animateInCanvas = () => {
     this._worker.postMessage({
       type: 'start',
-      detail: {}
+      detail: {},
     });
     return this;
   };
