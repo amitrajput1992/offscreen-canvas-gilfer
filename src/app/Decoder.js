@@ -3,7 +3,7 @@
  */
 
 export default class Decoder {
-  decodeFramesSync = (reader): any => {
+  decodeFramesSync = (reader) => {
     return Array.from({ length: reader.numFrames() }, (v, k) => k).map(fr => this._decodeFrame(reader, fr));
   };
 

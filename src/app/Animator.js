@@ -19,7 +19,7 @@
    */
 export default class Animator {
   constructor(reader, frames, cb) {
-    this._worker = new Worker('./worker.js');
+    this._worker = new Worker(location.protocol + '//' + location.host + '/build/worker.js');
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
