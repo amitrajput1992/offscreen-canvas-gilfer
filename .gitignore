@@ -62,7 +62,7 @@ typings/
 data/
 cloud/
 dist/
-build/report.html
+build/
 
 # IDE Specific
 .vscode/

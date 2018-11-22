@@ -1,8 +1,8 @@
 {
   "name": "offscreen-canvas-gifler",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Standalone library to render gif frames to an offscreen buffer",
-  "main": "build/offscreencanvasgifler.min.js",
+  "main": "src/app/OffscreenCanvasGifler.js",
   "repository": "https://gitlab.com/amitrajput1992/offscreen-canvas-gilfer.git",
   "author": "amitrajput1992 <amitrajput123.ar@gmail.com>",
   "license": "MIT",
@@ -19,12 +19,10 @@
     "@babel/core": "^7.0.0-0",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/polyfill": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0",
     "npm-run-all": "^4.1.3",
     "omggif": "^1.0.9",
     "parcel-bundler": "^1.10.3",
     "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "parcel-plugin-flow": "^0.1.0",
     "prettier": "^1.15.2"
   }
 }
