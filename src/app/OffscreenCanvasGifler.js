@@ -54,13 +54,13 @@ class OffscreenCanvasGifler {
     }
   };
 
-  setCanvasEl(selector) {
+  setCanvasEl(selector, setDimensions) {
     const canvas = this._getCanvasElement(selector);
-    this._animator.setCanvasEl(canvas);
+    this._animator.setCanvasEl(canvas, setDimensions);
   };
 
-  animate(setDimensions) {
-    this._animator.animateInCanvas(setDimensions);
+  animate() {
+    this._animator.animateInCanvas();
   };
 
   getFrameDataURL() {
