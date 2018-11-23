@@ -62,6 +62,10 @@ class OffscreenCanvasGifler {
   animate(setDimensions) {
     this._animator.animateInCanvas(setDimensions);
   };
+
+  getFrameDataURL() {
+    return this._animator.getFrameDataURL();
+  }
 }
 
 export default OffscreenCanvasGifler;

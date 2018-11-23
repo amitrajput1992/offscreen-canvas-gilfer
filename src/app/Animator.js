@@ -32,7 +32,6 @@ export default class Animator {
     this._frameIndex = 0;
     this._isRunning = false;
     this._cb = cb;
-    this._worker.onmessage = this._onMessage.bind(this);
 
     this._worker.postMessage({
       type: 'init',
@@ -45,14 +44,8 @@ export default class Animator {
     });
   }
 
-  _onMessage(e) {
-    if (e.data && e.data.type === 'onDrawFrame') {
-      const dataURL = this._canvas.toDataURL();
-      // send this data URL to any callbacks registered
-      if (this._cb && typeof this._cb === 'function') {
-        this._cb(dataURL);
-      }
-    }
+  getFrameDataURL() {
+    return this._canvas.toDataURL();
   };
 
   setCanvasEl(canvas, setDimensions = true) {
