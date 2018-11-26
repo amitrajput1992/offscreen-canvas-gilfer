@@ -12,8 +12,8 @@ let isRunning;
 // external
 let frames = [];
 let frameIndex = 0;
-let width = 0;
-let height = 0;
+let width = 512;
+let height = 256;
 let disposeFrame = null;
 let canvas = null;
 let ctx = null;
@@ -53,16 +53,7 @@ onmessage = function(e) {
 
 function createBufferCanvas(frame) {
   let bufferCanvas, bufferContext, imageData;
-  let width, height;
-  if(setDimensions) {
-    bufferCanvas = new OffscreenCanvas(frame.width, frame.height);
-    width = frame.width;
-    height = frame.height
-  } else {
-    bufferCanvas = new OffscreenCanvas(canvas.width, canvas.height);
-    width = canvas.width;
-    height = canvas.height
-  }
+  bufferCanvas = new OffscreenCanvas(frame.width, frame.height);
   bufferContext = bufferCanvas.getContext('2d');
   imageData = bufferContext.createImageData(width, height);
   imageData.data.set(frame.pixels);
@@ -118,7 +109,7 @@ function nextFrameRender() {
  */
 function onFrame(frame, i) {
   if(!frame.buffer) {
-    frame.buffer = createBufferCanvas(frame, width, height);
+    frame.buffer = createBufferCanvas(frame);
   }
   if(typeof disposeFrame === 'function') {
     disposeFrame();
@@ -133,7 +124,7 @@ function onFrame(frame, i) {
  * @param i: frame index
  */
 function onDrawFrame(frame, i) {
-  ctx.drawImage(frame.buffer, frame.x, frame.y, width, height); 
+  ctx.drawImage(frame.buffer, frame.x, frame.y); 
   postMessage({
     type: 'onDrawFrame',
   });

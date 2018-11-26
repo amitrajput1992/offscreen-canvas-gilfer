@@ -32,14 +32,16 @@ export default class Animator {
     this._worker = new Worker(bridgeCodeURL);
     this._reader = reader;
     this._frames = frames;
-    this._width = nearestPow2(this._reader.width);//this._reader.width;
-    this._height = nearestPow2(this._reader.height);//this._reader.height;
+    this._width = this._reader.width;//nearestPow2(this._reader.width);//this._reader.width;
+    this._height = this._reader.height;//nearestPow2(this._reader.height);//this._reader.height;
     this._loopCount = this._reader.loopCount();
     this._loops = 0;
     this._frameIndex = 0;
     this._isRunning = false;
     this._setDimensions = false;
     this._cb = cb;
+    this._renderWidth = nearestPow2(this._reader.width);
+    this._renderHeight = nearestPow2(this._reader.height);
 
     this._worker.postMessage({
       type: 'init',
@@ -48,6 +50,8 @@ export default class Animator {
         width: this._width,
         height: this._height,
         loopCount: this._loopCount,
+        renderWidth: this._renderWidth,
+        renderHeight: this._renderHeight,
       },
     });
   }
@@ -62,6 +66,8 @@ export default class Animator {
     if (setDimensions) {
       this._canvas.width = this._width;
       this._canvas.height = this._height;
+      this._canvas.style.width = this._renderWidth + 'px';
+      this._canvas.style.height = this._renderHeight + 'px';
     }
     let offscreenCanvas = this._canvas.transferControlToOffscreen();
     this._worker.postMessage(
@@ -69,7 +75,6 @@ export default class Animator {
         type: 'canvasCtx',
         detail: {
           canvas: offscreenCanvas,
-          setDimensions: this._setDimensions
         },
       },
       [offscreenCanvas],
