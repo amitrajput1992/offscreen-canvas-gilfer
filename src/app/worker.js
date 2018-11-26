@@ -133,7 +133,7 @@ function onFrame(frame, i) {
  * @param i: frame index
  */
 function onDrawFrame(frame, i) {
-  ctx.drawImage(frame.buffer, frame.x, frame.y);
+  ctx.drawImage(frame.buffer, frame.x, frame.y, width, height); 
   postMessage({
     type: 'onDrawFrame',
   });

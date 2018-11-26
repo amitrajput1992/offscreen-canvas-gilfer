@@ -18,6 +18,13 @@ import {bridgeCode} from './worker';
     height : height of the GIF
   return : A <canvas> element containing the frame's image.
    */
+
+function nearestPow2( aSize ){
+  return  Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
+}
+
+
+
 export default class Animator {
   constructor(reader, frames, cb) {
     const bridge = new Blob([bridgeCode]);
@@ -25,8 +32,8 @@ export default class Animator {
     this._worker = new Worker(bridgeCodeURL);
     this._reader = reader;
     this._frames = frames;
-    this._width = this._reader.width;
-    this._height = this._reader.height;
+    this._width = nearestPow2(this._reader.width);//this._reader.width;
+    this._height = nearestPow2(this._reader.height);//this._reader.height;
     this._loopCount = this._reader.loopCount();
     this._loops = 0;
     this._frameIndex = 0;
