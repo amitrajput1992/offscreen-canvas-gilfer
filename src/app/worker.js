@@ -12,14 +12,15 @@ let isRunning;
 // external
 let frames = [];
 let frameIndex = 0;
-let width = 512;
-let height = 256;
+let width = 0;
+let height = 0;
 let disposeFrame = null;
 let canvas = null;
 let ctx = null;
 let loopCount = 0;
 let loops = 0;
-let setDimensions = true;
+let renderWidth = 0;
+let renderHeight = 0;
 
 onmessage = function(e) {
   const detail = e.data.detail;
@@ -29,12 +30,13 @@ onmessage = function(e) {
       width = detail.width;
       height = detail.height;
       loopCount = detail.loopCount;
+      renderWidth = detail.renderWidth;
+      renderHeight = detail.renderHeight;
       break;
     }
 
     case 'canvasCtx': {
       canvas = detail.canvas;
-      setDimensions = detail.setDimensions;
       ctx = canvas.getContext('2d');
       break;
     }
@@ -124,7 +126,7 @@ function onFrame(frame, i) {
  * @param i: frame index
  */
 function onDrawFrame(frame, i) {
-  ctx.drawImage(frame.buffer, frame.x, frame.y); 
+  ctx.drawImage(frame.buffer, frame.x, frame.y, renderWidth, renderHeight); 
   postMessage({
     type: 'onDrawFrame',
   });
@@ -167,11 +169,11 @@ function getNextDisposeFrame(frame) {
   switch(frame.disposal) {
     case 2: {
       return function() {
-        ctx.clearRect(0, 0, width, height);
+        ctx.clearRect(0, 0, renderWidth, renderHeight);
       }
     }
     case 3: {
-      let saved = ctx.getImageData(0, 0, width, height);
+      let saved = ctx.getImageData(0, 0, renderWidth, renderHeight);
       return function() {
         ctx.putImageData(saved, 0, 0);
       }
