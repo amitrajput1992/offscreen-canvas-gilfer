@@ -19,6 +19,7 @@ let canvas = null;
 let ctx = null;
 let loopCount = 0;
 let loops = 0;
+let setDimensions = true;
 
 onmessage = function(e) {
   const detail = e.data.detail;
@@ -33,6 +34,7 @@ onmessage = function(e) {
 
     case 'canvasCtx': {
       canvas = detail.canvas;
+      setDimensions = detail.setDimensions;
       ctx = canvas.getContext('2d');
       break;
     }
@@ -51,7 +53,16 @@ onmessage = function(e) {
 
 function createBufferCanvas(frame) {
   let bufferCanvas, bufferContext, imageData;
-  bufferCanvas = new OffscreenCanvas(frame.width, frame.height);
+  let width, height;
+  if(setDimensions) {
+    bufferCanvas = new OffscreenCanvas(frame.width, frame.height);
+    width = frame.width;
+    height = frame.height
+  } else {
+    bufferCanvas = new OffscreenCanvas(canvas.width, canvas.height);
+    width = canvas.width;
+    height = canvas.height
+  }
   bufferContext = bufferCanvas.getContext('2d');
   imageData = bufferContext.createImageData(width, height);
   imageData.data.set(frame.pixels);

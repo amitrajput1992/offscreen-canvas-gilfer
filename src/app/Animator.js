@@ -31,6 +31,7 @@ export default class Animator {
     this._loops = 0;
     this._frameIndex = 0;
     this._isRunning = false;
+    this._setDimensions = false;
     this._cb = cb;
 
     this._worker.postMessage({
@@ -50,6 +51,7 @@ export default class Animator {
 
   setCanvasEl(canvas, setDimensions = true) {
     this._canvas = canvas;
+    this._setDimensions = setDimensions;
     if (setDimensions) {
       this._canvas.width = this._width;
       this._canvas.height = this._height;
@@ -60,6 +62,7 @@ export default class Animator {
         type: 'canvasCtx',
         detail: {
           canvas: offscreenCanvas,
+          setDimensions: this._setDimensions
         },
       },
       [offscreenCanvas],
