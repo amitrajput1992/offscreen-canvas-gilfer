@@ -126,7 +126,7 @@ function onFrame(frame, i) {
  * @param i: frame index
  */
 function onDrawFrame(frame, i) {
-  ctx.drawImage(frame.buffer, frame.x, frame.y, renderWidth, renderHeight); 
+  ctx.drawImage(frame.buffer, frame.x, frame.y); 
   postMessage({
     type: 'onDrawFrame',
   });

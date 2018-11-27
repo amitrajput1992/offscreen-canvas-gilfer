@@ -1,6 +1,6 @@
 {
   "name": "offscreen-canvas-gifler",
-  "version": "1.0.47",
+  "version": "1.0.48",
   "description": "Standalone library to render gif frames to an offscreen buffer",
   "main": "src/app/OffscreenCanvasGifler.js",
   "repository": "https://gitlab.com/amitrajput1992/offscreen-canvas-gilfer.git",
