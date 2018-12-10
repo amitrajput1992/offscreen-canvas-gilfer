@@ -169,11 +169,11 @@ function getNextDisposeFrame(frame) {
   switch(frame.disposal) {
     case 2: {
       return function() {
-        ctx.clearRect(0, 0, renderWidth, renderHeight);
+        ctx.clearRect(0, 0, width, height);
       }
     }
     case 3: {
-      let saved = ctx.getImageData(0, 0, renderWidth, renderHeight);
+      let saved = ctx.getImageData(0, 0, width, height);
       return function() {
         ctx.putImageData(saved, 0, 0);
       }

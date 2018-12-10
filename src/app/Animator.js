@@ -63,8 +63,8 @@ export default class Animator {
     this._canvas = canvas;
     this._setDimensions = setDimensions;
     if (setDimensions) {
-      this._canvas.width = this._renderWidth;
-      this._canvas.height = this._renderHeight;
+      this._canvas.width = this._width;//this._renderWidth;
+      this._canvas.height = this._height;//this._renderHeight;
     }
     let offscreenCanvas = this._canvas.transferControlToOffscreen();
     this._worker.postMessage(
