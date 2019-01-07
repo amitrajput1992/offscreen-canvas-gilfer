@@ -8,7 +8,7 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "watch": "parcel -p 9092 watch src/index.js src/index.html",
+    "watch": "parcel -p 9092 watch src/index.js src/app/Animator.js  src/app/Frames.js src/app/OffscreenCanvasGifler.js",
     "build": "yarn run-s build-worker build-app",
     "build-worker": "parcel build src/app/worker.js --out-dir build --out-file worker.js",
     "build-app": "parcel build src/app/OffscreenCanvasGifler.js --out-dir build --out-file offscreencanvasgifler.js",

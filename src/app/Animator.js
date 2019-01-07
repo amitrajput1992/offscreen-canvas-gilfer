@@ -19,17 +19,18 @@ import {bridgeCode} from './worker';
   return : A <canvas> element containing the frame's image.
    */
 
+import FramesManager from './Frames';
+
 function nearestPow2( aSize ){
   return  Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
 }
 
 
-
 export default class Animator {
   constructor(reader, frames, cb) {
-    const bridge = new Blob([bridgeCode]);
-    const bridgeCodeURL = URL.createObjectURL(bridge);
-    this._worker = new Worker(bridgeCodeURL);
+    // const bridge = new Blob([bridgeCode]);
+    // const bridgeCodeURL = URL.createObjectURL(bridge);
+    // this._worker = new Worker(bridgeCodeURL);
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -42,17 +43,20 @@ export default class Animator {
     this._renderWidth = nearestPow2(this._reader.width);
     this._renderHeight = nearestPow2(this._reader.height);
 
-    this._worker.postMessage({
-      type: 'init',
-      detail: {
-        frames: this._frames,
-        width: this._width,
-        height: this._height,
-        loopCount: this._loopCount,
-        renderWidth: this._renderWidth,
-        renderHeight: this._renderHeight,
-      },
-    });
+
+
+    let details = {
+      frames: this._frames,
+      width: this._width,
+      height: this._height,
+      loopCount: this._loopCount,
+      renderWidth: this._renderWidth,
+      renderHeight: this._renderHeight,
+    };
+
+    this.manager = new FramesManager;
+    this.manager.init(details);
+
   }
 
   getFrameDataURL() {
@@ -66,16 +70,9 @@ export default class Animator {
       this._canvas.width = this._width;//this._renderWidth;
       this._canvas.height = this._height;//this._renderHeight;
     }
-    let offscreenCanvas = this._canvas.transferControlToOffscreen();
-    this._worker.postMessage(
-      {
-        type: 'canvasCtx',
-        detail: {
-          canvas: offscreenCanvas,
-        },
-      },
-      [offscreenCanvas],
-    );
+
+    this.manager.canvas = this._canvas;
+    this.manager.ctx = this.manager.canvas.getContext('2d');
   };
 
   _stop() {
@@ -115,10 +112,7 @@ export default class Animator {
 
    */
   animateInCanvas() {
-    this._worker.postMessage({
-      type: 'start',
-      detail: {},
-    });
+    this.manager.start();
     return this;
   };
 }
