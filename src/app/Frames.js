@@ -28,6 +28,11 @@ export default class FramesManager
     this.lastTime = new Date().valueOf();
   }
 
+  setCanvas = (canvas) => {
+    this.canvas = canvas;
+    this.ctx = this.canvas.getContext('2d');
+  };
+
   createBufferCanvas = (frame) => {
     let bufferCanvas, bufferContext, imageData;
     bufferCanvas = document.createElement("canvas");

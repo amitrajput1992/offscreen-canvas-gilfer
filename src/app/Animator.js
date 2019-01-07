@@ -71,8 +71,7 @@ export default class Animator {
       this._canvas.height = this._height;//this._renderHeight;
     }
 
-    this.manager.canvas = this._canvas;
-    this.manager.ctx = this.manager.canvas.getContext('2d');
+    this.manager.setCanvas(this._canvas);
   };
 
   _stop() {
