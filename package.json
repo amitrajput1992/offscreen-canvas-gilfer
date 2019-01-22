@@ -1,6 +1,6 @@
 {
   "name": "offscreen-canvas-gifler",
-  "version": "1.0.49",
+  "version": "1.0.50",
   "description": "Standalone library to render gif frames to an offscreen buffer",
   "main": "lib/OffscreenCanvasGifler.js",
   "module": "src/app/OffscreenCanvasGifler.js",
@@ -15,7 +15,8 @@
     "build-worker": "parcel build src/app/worker.js --out-dir build --out-file worker.js",
     "build-app": "parcel build src/app/OffscreenCanvasGifler.js --out-dir build --out-file offscreencanvasgifler.js",
     "prettier": "prettier --write --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}",
-    "prettier-dr": "prettier --debug-check --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}"
+    "prettier-dr": "prettier --debug-check --config .prettierrc.json src/**/**/*.{js,jsx,css,scss}",
+    "basetag": "yarn version --patch && git push --tags && git push && echo \"Successfully released version $npm_package_version!\""
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
