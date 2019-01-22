@@ -1,6 +1,8 @@
-export default class FramesManager
-{
-  constructor(){
+/**
+ * @format
+ */
+export default class FramesManager {
+  constructor() {
     this.frames = [];
     this.frameIndex = 0;
     this.width = 0;
@@ -17,8 +19,7 @@ export default class FramesManager
     this.delayCompensation = 0;
   }
 
-  init(details)
-  {
+  init(details) {
     this.frames = details.frames;
     this.width = details.width;
     this.height = details.height;
@@ -69,10 +70,10 @@ export default class FramesManager
    * @param i
    */
   onFrame = (frame, i) => {
-    if(!frame.buffer) {
+    if (!frame.buffer) {
       frame.buffer = this.createBufferCanvas(frame);
     }
-    if(typeof this.disposeFrame === 'function') {
+    if (typeof this.disposeFrame === 'function') {
       this.disposeFrame();
     }
     this.disposeFrame = this.getNextDisposeFrame(frame);
@@ -122,16 +123,15 @@ export default class FramesManager
   };
 
   getNextDisposeFrame = (frame) => {
-
-    switch(frame.disposal) {
+    switch (frame.disposal) {
       case 2: {
-        return function() {
+        return function () {
           this.ctx.clearRect(0, 0, this.width, this.height);
         }.bind(this);
       }
       case 3: {
         let saved = this.ctx.getImageData(0, 0, this.width, this.height);
-        return function() {
+        return function () {
           this.ctx.putImageData(saved, 0, 0);
         }.bind(this);
       }

@@ -1,4 +1,5 @@
 /**
+ * @flow
  * @format
  */
 import {bridgeCode} from './worker';
@@ -20,6 +21,7 @@ import {bridgeCode} from './worker';
    */
 
 import FramesManager from './Frames';
+import {GifReader} from "omggif";
 
 function nearestPow2( aSize ){
   return  Math.pow( 2, Math.round( Math.log( aSize ) / Math.log( 2 ) ) );
@@ -27,10 +29,22 @@ function nearestPow2( aSize ){
 
 
 export default class Animator {
-  constructor(reader, frames, cb) {
-    // const bridge = new Blob([bridgeCode]);
-    // const bridgeCodeURL = URL.createObjectURL(bridge);
-    // this._worker = new Worker(bridgeCodeURL);
+  _reader: GifReader;
+  _frames: any;
+  _width: number;
+  _height: number;
+  _loopCount: number;
+  _loops: number;
+  _frameIndex: number;
+  _isRunning: boolean;
+  _renderWidth: number;
+  _renderHeight: number;
+  _renderToOffscreen: boolean;
+  _worker: Worker;
+  _manager: FramesManager;
+  _canvas: HTMLCanvasElement;
+
+  constructor(reader: GifReader, frames: any, renderToOffscreen: boolean) {
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -39,11 +53,9 @@ export default class Animator {
     this._loops = 0;
     this._frameIndex = 0;
     this._isRunning = false;
-    this._cb = cb;
     this._renderWidth = nearestPow2(this._reader.width);
     this._renderHeight = nearestPow2(this._reader.height);
-
-
+    this._renderToOffscreen = renderToOffscreen;
 
     let details = {
       frames: this._frames,
@@ -54,38 +66,59 @@ export default class Animator {
       renderHeight: this._renderHeight,
     };
 
-    this.manager = new FramesManager;
-    this.manager.init(details);
-
+    if(renderToOffscreen) {
+      // use a worker based loop
+      const bridge = new Blob([bridgeCode]);
+      const bridgeCodeURL = URL.createObjectURL(bridge);
+      this._worker = new Worker(bridgeCodeURL);
+      this._worker.postMessage({
+        type: 'init',
+        detail: details
+      });
+    } else {
+      this._manager = new FramesManager();
+      this._manager.init(details);
+    }
   }
 
-  getFrameDataURL() {
+  getFrameDataURL = (): any => {
     return this._canvas.toDataURL();
   };
 
-  setCanvasEl(canvas, setDimensions = true) {
+  setCanvasEl = (canvas: HTMLCanvasElement, setDimensions: boolean = true): void => {
     this._canvas = canvas;
-    this._setDimensions = setDimensions;
     if (setDimensions) {
       this._canvas.width = this._width;//this._renderWidth;
       this._canvas.height = this._height;//this._renderHeight;
     }
 
-    this.manager.setCanvas(this._canvas);
+    if(this._renderToOffscreen) {
+      // $FlowFixMe
+      let offscreenCanvas = this._canvas.transferControlToOffscreen();
+      this._worker.postMessage(
+        {
+          type: 'canvasCtx',
+          detail: {
+            canvas: offscreenCanvas,
+          },
+        },
+        [offscreenCanvas],
+      );
+    } else {
+      this._manager.setCanvas(this._canvas);
+    }
   };
 
-  _stop() {
+  stop = (): void => {
     this._isRunning = false;
-    return this;
   };
 
-  reset() {
+  reset = (): void => {
     this._frameIndex = 0;
     this._loops = 0;
-    return this;
   };
 
-  running() {
+  running = (): boolean => {
     return this._isRunning;
   };
 
@@ -110,8 +143,14 @@ export default class Animator {
     animateInCanvas -> start -> onFrame -> onDrawFrame
 
    */
-  animateInCanvas() {
-    this.manager.start();
-    return this;
+  animateInCanvas = () => {
+    if(this._renderToOffscreen) {
+      this._worker.postMessage({
+        type: 'start',
+        detail: {},
+      });
+    } else {
+      this._manager.start();
+    }
   };
 }
