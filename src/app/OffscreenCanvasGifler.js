@@ -15,12 +15,12 @@ import Animator from './Animator';
  * gifler.animate();
  */
 class OffscreenCanvasGifler {
-  _cb: () => void;
+  _cb: Function;
   _decoder: Decoder;
   _animator: Animator;
   _renderToOffscreen: boolean;
 
-  constructor(renderToOffscreen, cb?) {
+  constructor(renderToOffscreen: boolean, cb?: Function) {
     this._decoder = new Decoder();
     this._cb = cb;
     this._renderToOffscreen = renderToOffscreen;
@@ -48,7 +48,7 @@ class OffscreenCanvasGifler {
   _init = async (data: ArrayBuffer): Promise<any> => {
     const reader = new GifReader(new Uint8Array(data));
     const frames = await this._decoder.decodeFramesAsync(reader);
-    this._animator = new Animator(reader, frames, this._renderToOffscreen);
+    this._animator = new Animator(reader, frames, this._renderToOffscreen, this._cb);
   };
 
   _getCanvasElement(selector: string | HTMLCanvasElement): HTMLCanvasElement | null {

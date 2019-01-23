@@ -129,6 +129,7 @@ function onDrawFrame(frame, i) {
   ctx.drawImage(frame.buffer, frame.x, frame.y); 
   postMessage({
     type: 'onDrawFrame',
+    frameIndex: i
   });
 }
 

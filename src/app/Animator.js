@@ -20,7 +20,7 @@ import {bridgeCode} from './worker';
   return : A <canvas> element containing the frame's image.
    */
 
-import FramesManager from './Frames';
+import FramesManager from './FramesManager';
 import {GifReader} from "omggif";
 
 function nearestPow2( aSize ){
@@ -43,8 +43,10 @@ export default class Animator {
   _worker: Worker;
   _manager: FramesManager;
   _canvas: HTMLCanvasElement;
+  _cb: Function;
 
-  constructor(reader: GifReader, frames: any, renderToOffscreen: boolean) {
+  constructor(reader: GifReader, frames: any, renderToOffscreen: boolean, cb: Function) {
+    this._cb = cb;
     this._reader = reader;
     this._frames = frames;
     this._width = this._reader.width;
@@ -75,11 +77,21 @@ export default class Animator {
         type: 'init',
         detail: details
       });
+      this._worker.onmessage = this._messageFromWorker;
     } else {
-      this._manager = new FramesManager();
+      this._manager = new FramesManager(this._cb);
       this._manager.init(details);
     }
   }
+
+  _messageFromWorker = (e) => {
+    switch (e.data.type) {
+      case 'onDrawFrame': {
+        this._cb(e.data.frameIndex);
+        break;
+      }
+    }
+  };
 
   getFrameDataURL = (): any => {
     return this._canvas.toDataURL();
