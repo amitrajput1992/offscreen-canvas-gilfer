@@ -84,9 +84,11 @@ export default class Animator {
     }
   }
 
-  _messageFromWorker = (e) => {
+  _messageFromWorker = (e: mixed) => {
+    // $FlowFixMe
     switch (e.data.type) {
       case 'onDrawFrame': {
+        // $FlowFixMe
         this._cb(e.data.frameIndex);
         break;
       }

@@ -3,7 +3,9 @@ import {render}  from 'react-dom';
 import OffscreenCanvasGifler  from './app/OffscreenCanvasGifler';
 
 render(
-  <div>Canvas GIF</div>,
+  <React.Fragment>
+    <div>Canvas GIF</div>
+  </React.Fragment>,
   document.getElementById('root')
 );
 
